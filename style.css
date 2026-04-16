@@ -582,6 +582,7 @@ input, textarea { font: inherit; color: inherit; }
   border-radius: var(--radius);
   overflow: hidden;
   transition: background 0.4s var(--ease);
+  text-align: center;
 }
 
 .process-step:hover { background: var(--bg-card); }
