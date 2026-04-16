@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3MD — Web Design, Software & App Development</title>
+  <meta name="description" content="3MD builds modern websites, software and mobile apps. Clean code, sharp design, fast delivery.">
+  <link rel="icon" type="image/webp" href="assets/favicon.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ─── NAV ─── -->
+  <nav class="nav" id="nav">
+    <a href="#hero" class="nav__logo">
+      <img src="assets/logo-white.webp" alt="3MD" width="120">
+    </a>
+    <div class="nav__links" id="navLinks">
+      <a href="#services">Services</a>
+      <a href="#stack">Stack</a>
+      <a href="#process">Process</a>
+      <a href="#contact" class="btn btn--sm">Get in touch</a>
+    </div>
+    <button class="nav__burger" id="burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero" id="hero">
+    <canvas id="gridCanvas" class="hero__canvas"></canvas>
+    <div class="hero__content reveal">
+      <p class="hero__tag">Web &middot; Software &middot; Apps</p>
+      <h1 class="hero__title">We build <span class="text-accent" id="typed"></span><span class="cursor">|</span></h1>
+      <p class="hero__sub">Design-led development studio crafting digital products that perform.</p>
+      <div class="hero__cta">
+        <a href="#contact" class="btn">Start a project</a>
+        <a href="#services" class="btn btn--outline">What we do</a>
+      </div>
+    </div>
+    <div class="hero__scroll">
+      <span>scroll</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ─── SERVICES ─── -->
+  <section class="section" id="services">
+    <div class="container">
+      <p class="section__tag reveal">What we do</p>
+      <h2 class="section__title reveal">Services</h2>
+      <div class="services-grid">
+        <article class="card reveal">
+          <div class="card__icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <h3 class="card__title">Web Design & Development</h3>
+          <p class="card__text">Responsive, high-performance websites built with modern frameworks. From landing pages to complex web applications.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card__icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg>
+          </div>
+          <h3 class="card__title">Software Development</h3>
+          <p class="card__text">Custom software solutions — APIs, dashboards, automation tools, SaaS platforms. Scalable architecture, clean code.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card__icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+          </div>
+          <h3 class="card__title">App Development</h3>
+          <p class="card__text">Native and cross-platform mobile apps for iOS and Android. Smooth UX, fast performance, app store ready.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TECH STACK ─── -->
+  <section class="section section--dark" id="stack">
+    <div class="container">
+      <p class="section__tag reveal">What we use</p>
+      <h2 class="section__title reveal">Tech Stack</h2>
+      <p class="section__sub reveal">We pick the right tool for the job. Here's what's in our arsenal.</p>
+
+      <div class="stack-group reveal">
+        <h4 class="stack-group__label">Frontend</h4>
+        <div class="stack-pills">
+          <span class="pill">React</span>
+          <span class="pill">Next.js</span>
+          <span class="pill">Vue</span>
+          <span class="pill">Nuxt</span>
+          <span class="pill">Svelte</span>
+          <span class="pill">Angular</span>
+          <span class="pill">TypeScript</span>
+          <span class="pill">Tailwind CSS</span>
+          <span class="pill">Three.js</span>
+          <span class="pill">GSAP</span>
+          <span class="pill">Astro</span>
+        </div>
+      </div>
+
+      <div class="stack-group reveal">
+        <h4 class="stack-group__label">Backend</h4>
+        <div class="stack-pills">
+          <span class="pill">Node.js</span>
+          <span class="pill">Python</span>
+          <span class="pill">Django</span>
+          <span class="pill">FastAPI</span>
+          <span class="pill">Go</span>
+          <span class="pill">Rust</span>
+          <span class="pill">C#</span>
+          <span class="pill">.NET</span>
+          <span class="pill">Java</span>
+          <span class="pill">Spring Boot</span>
+          <span class="pill">PHP</span>
+          <span class="pill">Laravel</span>
+          <span class="pill">Ruby on Rails</span>
+          <span class="pill">Express</span>
+          <span class="pill">NestJS</span>
+          <span class="pill">GraphQL</span>
+        </div>
+      </div>
+
+      <div class="stack-group reveal">
+        <h4 class="stack-group__label">Mobile</h4>
+        <div class="stack-pills">
+          <span class="pill">React Native</span>
+          <span class="pill">Flutter</span>
+          <span class="pill">Swift</span>
+          <span class="pill">Kotlin</span>
+          <span class="pill">Expo</span>
+        </div>
+      </div>
+
+      <div class="stack-group reveal">
+        <h4 class="stack-group__label">Cloud & Infrastructure</h4>
+        <div class="stack-pills">
+          <span class="pill">AWS</span>
+          <span class="pill">Google Cloud</span>
+          <span class="pill">Azure</span>
+          <span class="pill">Cloudflare</span>
+          <span class="pill">Vercel</span>
+          <span class="pill">Docker</span>
+          <span class="pill">Kubernetes</span>
+          <span class="pill">Terraform</span>
+          <span class="pill">GitHub Actions</span>
+        </div>
+      </div>
+
+      <div class="stack-group reveal">
+        <h4 class="stack-group__label">Data & AI</h4>
+        <div class="stack-pills">
+          <span class="pill">PostgreSQL</span>
+          <span class="pill">MongoDB</span>
+          <span class="pill">Redis</span>
+          <span class="pill">Firebase</span>
+          <span class="pill">Supabase</span>
+          <span class="pill">OpenAI</span>
+          <span class="pill">LangChain</span>
+          <span class="pill">TensorFlow</span>
+          <span class="pill">Elasticsearch</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PROCESS ─── -->
+  <section class="section" id="process">
+    <div class="container">
+      <p class="section__tag reveal">How we work</p>
+      <h2 class="section__title reveal">Process</h2>
+      <div class="process-grid">
+        <div class="process-step reveal">
+          <span class="process-step__num">01</span>
+          <h4 class="process-step__title">Discovery</h4>
+          <p class="process-step__text">We learn your goals, audience, and constraints. No fluff — just the details that matter.</p>
+        </div>
+        <div class="process-step reveal">
+          <span class="process-step__num">02</span>
+          <h4 class="process-step__title">Design</h4>
+          <p class="process-step__text">Wireframes, prototypes, and visual design. You see it before we build it.</p>
+        </div>
+        <div class="process-step reveal">
+          <span class="process-step__num">03</span>
+          <h4 class="process-step__title">Develop</h4>
+          <p class="process-step__text">Clean, tested code shipped in iterations. You stay in the loop at every step.</p>
+        </div>
+        <div class="process-step reveal">
+          <span class="process-step__num">04</span>
+          <h4 class="process-step__title">Deliver</h4>
+          <p class="process-step__text">Launch, monitor, iterate. We stick around to make sure everything runs smooth.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CONTACT ─── -->
+  <section class="section section--dark" id="contact">
+    <div class="container container--sm">
+      <p class="section__tag reveal">Let's talk</p>
+      <h2 class="section__title reveal">Start a project</h2>
+      <p class="section__sub reveal">Tell us what you're building. We'll get back to you within 24 hours.</p>
+
+      <form class="form reveal" id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+        <!-- Replace YOUR_ACCESS_KEY with your Web3Forms key from https://web3forms.com -->
+        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY">
+        <input type="hidden" name="subject" value="New enquiry from 3MD website">
+        <input type="hidden" name="from_name" value="3MD Website">
+        <input type="checkbox" name="botcheck" class="hidden" style="display:none">
+
+        <div class="form__row">
+          <div class="form__group">
+            <input type="text" name="name" id="name" required placeholder=" ">
+            <label for="name">Name</label>
+          </div>
+          <div class="form__group">
+            <input type="email" name="email" id="email" required placeholder=" ">
+            <label for="email">Email</label>
+          </div>
+        </div>
+        <div class="form__group">
+          <textarea name="message" id="message" rows="5" required placeholder=" "></textarea>
+          <label for="message">Tell us about your project</label>
+        </div>
+        <button type="submit" class="btn btn--full" id="submitBtn">
+          <span>Send message</span>
+          <svg class="btn__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </form>
+      <p class="form__status" id="formStatus"></p>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <img src="assets/logo-white.webp" alt="3MD" width="80" class="footer__logo">
+      <p class="footer__copy">&copy; 2026 3MD. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
