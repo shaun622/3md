@@ -33,20 +33,19 @@ window.addEventListener('scroll', () => {
 
 // ─── MOBILE MENU ───
 const burger = document.getElementById('burger');
-const navLinks = document.getElementById('navLinks');
+const mobileMenu = document.getElementById('mobileMenu');
 
-burger.addEventListener('click', () => {
-  burger.classList.toggle('open');
-  navLinks.classList.toggle('open');
-  document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
-});
+function toggleMenu(open) {
+  const isOpen = typeof open === 'boolean' ? open : !mobileMenu.classList.contains('open');
+  burger.classList.toggle('open', isOpen);
+  mobileMenu.classList.toggle('open', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
 
-navLinks.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', () => {
-    burger.classList.remove('open');
-    navLinks.classList.remove('open');
-    document.body.style.overflow = '';
-  });
+burger.addEventListener('click', () => toggleMenu());
+
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => toggleMenu(false));
 });
 
 // ─── SMOOTH ANCHOR SCROLL ───
