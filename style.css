@@ -262,24 +262,14 @@ input, textarea { font: inherit; color: inherit; }
 
 .anim-line {
   display: block;
-  overflow: hidden;
-}
-
-.anim-line::after {
-  content: '';
-  display: block;
-  transform: translateY(110%);
-  transition: transform 1s var(--ease);
-}
-
-/* Line reveal: we use a clip approach */
-.anim-line {
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 0.9s var(--ease);
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1s var(--ease), transform 1s var(--ease);
 }
 
 .anim-line.visible {
-  clip-path: inset(0 0 0% 0);
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ─── SECTIONS ─── */

@@ -17,6 +17,14 @@ const revealObserver = new IntersectionObserver((entries) => {
 
 revealEls.forEach(el => revealObserver.observe(el));
 
+// Force-trigger hero animations on load (above the fold — observer may miss them)
+window.addEventListener('load', () => {
+  document.querySelectorAll('.hero .anim-reveal, .hero .anim-line').forEach(el => {
+    const delay = parseInt(el.dataset.delay || 0);
+    setTimeout(() => el.classList.add('visible'), delay + 200);
+  });
+});
+
 // ─── NAV ───
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
