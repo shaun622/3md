@@ -1,39 +1,26 @@
 /* ═══════════════════════════════════════════
-   3MD — Interactions & Animations
+   3MD — Interactions v2
    ═══════════════════════════════════════════ */
 
-// ─── TYPED EFFECT ───
-const words = ['digital experiences.', 'web apps.', 'software.', 'mobile apps.', 'clean interfaces.', 'fast APIs.', 'your next idea.'];
-let wordIdx = 0, charIdx = 0, deleting = false;
-const typedEl = document.getElementById('typed');
+// ─── SCROLL REVEAL (IntersectionObserver) ───
+const revealEls = document.querySelectorAll('.anim-reveal, .anim-line');
 
-function type() {
-  const current = words[wordIdx];
-  typedEl.textContent = current.substring(0, charIdx);
-
-  if (!deleting) {
-    charIdx++;
-    if (charIdx > current.length) {
-      setTimeout(() => { deleting = true; type(); }, 2000);
-      return;
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const delay = parseInt(entry.target.dataset.delay || 0);
+      setTimeout(() => entry.target.classList.add('visible'), delay);
+      revealObserver.unobserve(entry.target);
     }
-  } else {
-    charIdx--;
-    if (charIdx === 0) {
-      deleting = false;
-      wordIdx = (wordIdx + 1) % words.length;
-    }
-  }
-  setTimeout(type, deleting ? 30 : 80);
-}
-type();
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
 
-// ─── NAV SCROLL ───
+revealEls.forEach(el => revealObserver.observe(el));
+
+// ─── NAV ───
 const nav = document.getElementById('nav');
-let lastScroll = 0;
-
 window.addEventListener('scroll', () => {
-  nav.classList.toggle('nav--scrolled', window.scrollY > 50);
+  nav.classList.toggle('nav--scrolled', window.scrollY > 60);
 }, { passive: true });
 
 // ─── MOBILE MENU ───
@@ -43,45 +30,42 @@ const navLinks = document.getElementById('navLinks');
 burger.addEventListener('click', () => {
   burger.classList.toggle('open');
   navLinks.classList.toggle('open');
+  document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
 });
 
 navLinks.querySelectorAll('a').forEach(link => {
   link.addEventListener('click', () => {
     burger.classList.remove('open');
     navLinks.classList.remove('open');
+    document.body.style.overflow = '';
   });
 });
 
-// ─── SCROLL REVEAL ───
-const reveals = document.querySelectorAll('.reveal');
-
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      revealObserver.unobserve(entry.target);
+// ─── SMOOTH ANCHOR SCROLL ───
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', (e) => {
+    const target = document.querySelector(anchor.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth' });
     }
   });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+});
 
-reveals.forEach(el => revealObserver.observe(el));
-
-// ─── HERO GRID CANVAS ───
+// ─── HERO DOT GRID ───
 const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
-let animFrame;
 
 function resizeCanvas() {
   canvas.width = canvas.offsetWidth * devicePixelRatio;
   canvas.height = canvas.offsetHeight * devicePixelRatio;
   ctx.scale(devicePixelRatio, devicePixelRatio);
 }
-
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
 let mouse = { x: -1000, y: -1000 };
-document.addEventListener('mousemove', e => {
+window.addEventListener('mousemove', e => {
   const rect = canvas.getBoundingClientRect();
   mouse.x = e.clientX - rect.left;
   mouse.y = e.clientY - rect.top;
@@ -92,63 +76,140 @@ function drawGrid(time) {
   const h = canvas.offsetHeight;
   ctx.clearRect(0, 0, w, h);
 
-  const gap = 60;
-  const dotSize = 1;
-  const accentR = 232, accentG = 135, accentB = 61;
+  const gap = 50;
 
   for (let x = gap; x < w; x += gap) {
     for (let y = gap; y < h; y += gap) {
       const dx = mouse.x - x;
       const dy = mouse.y - y;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      const maxDist = 200;
+      const maxDist = 180;
 
-      let alpha = 0.15;
-      let size = dotSize;
+      let alpha, size, r, g, b;
 
       if (dist < maxDist) {
         const t = 1 - dist / maxDist;
-        alpha = 0.15 + t * 0.6;
-        size = dotSize + t * 2;
-        ctx.fillStyle = `rgba(${accentR},${accentG},${accentB},${alpha})`;
-      } else {
-        // subtle wave
-        const wave = Math.sin(time * 0.001 + x * 0.01 + y * 0.01) * 0.05;
-        alpha = 0.1 + wave;
-        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-      }
+        const eased = t * t; // ease-in for snappier falloff
+        alpha = 0.08 + eased * 0.7;
+        size = 1 + eased * 2.5;
+        r = 232; g = 135; b = 61;
 
-      ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  animFrame = requestAnimationFrame(drawGrid);
-}
-
-// Only run canvas animation on non-mobile for performance
-if (window.innerWidth > 768) {
-  requestAnimationFrame(drawGrid);
-} else {
-  // Static simple grid for mobile
-  function drawStaticGrid() {
-    const w = canvas.offsetWidth;
-    const h = canvas.offsetHeight;
-    ctx.clearRect(0, 0, w, h);
-    const gap = 50;
-    for (let x = gap; x < w; x += gap) {
-      for (let y = gap; y < h; y += gap) {
-        ctx.fillStyle = 'rgba(255,255,255,0.08)';
+        // push dots away slightly
+        const pushX = (dx / dist) * eased * -3;
+        const pushY = (dy / dist) * eased * -3;
+        ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
         ctx.beginPath();
-        ctx.arc(x, y, 1, 0, Math.PI * 2);
+        ctx.arc(x + pushX, y + pushY, size, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        const wave = Math.sin(time * 0.0008 + x * 0.015 + y * 0.01) * 0.04;
+        alpha = 0.06 + wave;
+        ctx.fillStyle = `rgba(255,255,255,${Math.max(0, alpha)})`;
+        ctx.beginPath();
+        ctx.arc(x, y, 0.8, 0, Math.PI * 2);
         ctx.fill();
       }
     }
   }
-  drawStaticGrid();
-  window.addEventListener('resize', drawStaticGrid);
+
+  requestAnimationFrame(drawGrid);
 }
+
+if (window.innerWidth > 768) {
+  requestAnimationFrame(drawGrid);
+} else {
+  // Simple static grid for mobile
+  (function staticGrid() {
+    const w = canvas.offsetWidth;
+    const h = canvas.offsetHeight;
+    ctx.clearRect(0, 0, w, h);
+    for (let x = 40; x < w; x += 40) {
+      for (let y = 40; y < h; y += 40) {
+        ctx.fillStyle = 'rgba(255,255,255,0.05)';
+        ctx.beginPath();
+        ctx.arc(x, y, 0.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  })();
+}
+
+// ─── BENTO CARD GLOW + TILT ───
+document.querySelectorAll('[data-tilt]').forEach(card => {
+  const glow = card.querySelector('.bento__glow');
+
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+
+    // Tilt
+    const rotateX = ((y - cy) / cy) * -4;
+    const rotateY = ((x - cx) / cx) * 4;
+    card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+
+    // Glow follow
+    if (glow) {
+      glow.style.left = x + 'px';
+      glow.style.top = y + 'px';
+    }
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale(1)';
+  });
+});
+
+// ─── MAGNETIC BUTTONS ───
+document.querySelectorAll('.btn--magnetic').forEach(btn => {
+  btn.addEventListener('mousemove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+  });
+
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = 'translate(0, 0)';
+  });
+});
+
+// ─── INFINITE MARQUEE ───
+function initMarquees() {
+  document.querySelectorAll('.marquee').forEach(marquee => {
+    const track = marquee.querySelector('.marquee__track');
+    const speed = marquee.dataset.speed || 'medium';
+    const reverse = marquee.dataset.direction === 'reverse';
+
+    // Clone items to fill width
+    const items = track.innerHTML;
+    track.innerHTML = items + items + items;
+
+    const speeds = { fast: 0.6, medium: 0.4, slow: 0.25 };
+    const pxPerFrame = speeds[speed] || 0.4;
+    let pos = 0;
+
+    // Get width of one set of items
+    const singleWidth = track.scrollWidth / 3;
+
+    function animate() {
+      pos += reverse ? pxPerFrame : -pxPerFrame;
+
+      // Reset seamlessly
+      if (!reverse && pos <= -singleWidth) pos += singleWidth;
+      if (reverse && pos >= 0) pos -= singleWidth;
+
+      track.style.transform = `translateX(${pos}px)`;
+      requestAnimationFrame(animate);
+    }
+
+    if (!reverse) pos = 0; else pos = -singleWidth;
+    requestAnimationFrame(animate);
+  });
+}
+initMarquees();
 
 // ─── CONTACT FORM ───
 const form = document.getElementById('contactForm');
@@ -157,7 +218,6 @@ const submitBtn = document.getElementById('submitBtn');
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-
   submitBtn.disabled = true;
   submitBtn.querySelector('span').textContent = 'Sending...';
   statusEl.textContent = '';
@@ -168,11 +228,10 @@ form.addEventListener('submit', async (e) => {
       method: 'POST',
       body: new FormData(form),
     });
-
     const data = await res.json();
 
     if (data.success) {
-      statusEl.textContent = 'Message sent! We\'ll be in touch soon.';
+      statusEl.textContent = 'Message sent — we\'ll be in touch soon.';
       statusEl.classList.add('form__status--success');
       form.reset();
     } else {
@@ -185,15 +244,4 @@ form.addEventListener('submit', async (e) => {
     submitBtn.disabled = false;
     submitBtn.querySelector('span').textContent = 'Send message';
   }
-});
-
-// ─── SMOOTH ANCHOR SCROLL (fallback) ───
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', (e) => {
-    const target = document.querySelector(anchor.getAttribute('href'));
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
-  });
 });
