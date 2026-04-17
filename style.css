@@ -354,24 +354,52 @@ input, textarea { font: inherit; color: inherit; }
 
 .hero__scroll {
   position: absolute;
-  bottom: 48px;
+  bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.hero__scroll-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--accent);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.85;
 }
 
 .hero__scroll-line {
-  width: 1px;
-  height: 64px;
-  background: linear-gradient(to bottom, var(--accent), transparent);
-  animation: scrollPulse 2.5s ease-in-out infinite;
+  position: relative;
+  width: 2px;
+  height: 110px;
+  background: linear-gradient(to bottom, rgba(232,135,61,0.15), rgba(232,135,61,0.5), rgba(232,135,61,0.05));
+  border-radius: 2px;
+  overflow: hidden;
 }
 
-@keyframes scrollPulse {
-  0% { opacity: 0; transform: scaleY(0); transform-origin: top; }
-  30% { opacity: 1; transform: scaleY(1); transform-origin: top; }
-  70% { opacity: 1; transform: scaleY(1); transform-origin: bottom; }
-  100% { opacity: 0; transform: scaleY(0); transform-origin: bottom; }
+.hero__scroll-dot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 18px;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(232,135,61,0.8);
+  animation: scrollDot 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes scrollDot {
+  0% { top: -18px; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { top: 110px; opacity: 0; }
 }
 
 /* ─── REVEAL ANIMATIONS ─── */

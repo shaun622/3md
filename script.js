@@ -84,36 +84,47 @@ function drawGrid(time) {
   ctx.clearRect(0, 0, w, h);
 
   const gap = 50;
+  const maxDist = 240;
 
   for (let x = gap; x < w; x += gap) {
     for (let y = gap; y < h; y += gap) {
       const dx = mouse.x - x;
       const dy = mouse.y - y;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      const maxDist = 180;
-
-      let alpha, size, r, g, b;
 
       if (dist < maxDist) {
         const t = 1 - dist / maxDist;
-        const eased = t * t; // ease-in for snappier falloff
-        alpha = 0.08 + eased * 0.7;
-        size = 1 + eased * 2.5;
-        r = 232; g = 135; b = 61;
+        const eased = t * t;
 
-        // push dots away slightly
-        const pushX = (dx / dist) * eased * -3;
-        const pushY = (dy / dist) * eased * -3;
-        ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+        // Push dots away from cursor
+        const pushX = dist > 0 ? (dx / dist) * eased * -5 : 0;
+        const pushY = dist > 0 ? (dy / dist) * eased * -5 : 0;
+        const cx = x + pushX;
+        const cy = y + pushY;
+
+        // Glow halo
+        const haloSize = 3 + eased * 10;
+        const haloGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, haloSize);
+        haloGrad.addColorStop(0, `rgba(232,135,61,${0.25 * eased})`);
+        haloGrad.addColorStop(1, 'rgba(232,135,61,0)');
+        ctx.fillStyle = haloGrad;
         ctx.beginPath();
-        ctx.arc(x + pushX, y + pushY, size, 0, Math.PI * 2);
+        ctx.arc(cx, cy, haloSize, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Solid dot
+        const alpha = 0.3 + eased * 0.7;
+        const size = 1.4 + eased * 3;
+        ctx.fillStyle = `rgba(244,180,120,${alpha})`;
+        ctx.beginPath();
+        ctx.arc(cx, cy, size, 0, Math.PI * 2);
         ctx.fill();
       } else {
-        const wave = Math.sin(time * 0.0008 + x * 0.015 + y * 0.01) * 0.04;
-        alpha = 0.06 + wave;
+        const wave = Math.sin(time * 0.0008 + x * 0.015 + y * 0.01) * 0.05;
+        const alpha = 0.12 + wave;
         ctx.fillStyle = `rgba(255,255,255,${Math.max(0, alpha)})`;
         ctx.beginPath();
-        ctx.arc(x, y, 0.8, 0, Math.PI * 2);
+        ctx.arc(x, y, 1, 0, Math.PI * 2);
         ctx.fill();
       }
     }
