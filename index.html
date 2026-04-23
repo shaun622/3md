@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 
@@ -224,22 +225,34 @@
       </div>
 
       <form class="form anim-reveal" id="contactForm" action="/api/contact" method="POST">
-        <input type="checkbox" name="botcheck" style="display:none">
+        <!-- Honeypot fields (bots auto-fill, humans don't see) -->
+        <div class="honeypot" aria-hidden="true">
+          <label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+          <label>Company <input type="text" name="company_url" tabindex="-1" autocomplete="off"></label>
+          <input type="checkbox" name="botcheck" tabindex="-1">
+        </div>
+
+        <!-- Timestamp for minimum-fill-time check -->
+        <input type="hidden" name="ts" id="formTs" value="">
 
         <div class="form__row">
           <div class="form__group">
-            <input type="text" name="name" id="name" required placeholder=" ">
+            <input type="text" name="name" id="name" required placeholder=" " maxlength="80" autocomplete="name">
             <label for="name">Name</label>
           </div>
           <div class="form__group">
-            <input type="email" name="email" id="email" required placeholder=" ">
+            <input type="email" name="email" id="email" required placeholder=" " maxlength="120" autocomplete="email">
             <label for="email">Email</label>
           </div>
         </div>
         <div class="form__group">
-          <textarea name="message" id="message" rows="5" required placeholder=" "></textarea>
+          <textarea name="message" id="message" rows="5" required placeholder=" " maxlength="3000"></textarea>
           <label for="message">Tell us about your project</label>
         </div>
+
+        <!-- Cloudflare Turnstile (invisible) -->
+        <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY" data-size="invisible" data-callback="onTurnstileVerified"></div>
+
         <button type="submit" class="btn btn--magnetic btn--full" id="submitBtn">
           <span>Send message</span>
           <svg class="btn__arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>

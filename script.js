@@ -233,25 +233,42 @@ initMarquees();
 const form = document.getElementById('contactForm');
 const statusEl = document.getElementById('formStatus');
 const submitBtn = document.getElementById('submitBtn');
+const formTs = document.getElementById('formTs');
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+// Stamp timestamp when user first interacts with form (not on page load —
+// that way refilling after an error still works naturally)
+let formStarted = false;
+form.addEventListener('focusin', () => {
+  if (!formStarted) {
+    formTs.value = Date.now();
+    formStarted = true;
+  }
+}, { once: false });
+
+// Turnstile callback (global, invoked by the widget)
+let turnstileToken = null;
+window.onTurnstileVerified = (token) => {
+  turnstileToken = token;
+};
+
+async function submitForm() {
   submitBtn.disabled = true;
   submitBtn.querySelector('span').textContent = 'Sending...';
   statusEl.textContent = '';
   statusEl.className = 'form__status';
 
   try {
-    const res = await fetch(form.action, {
-      method: 'POST',
-      body: new FormData(form),
-    });
+    const fd = new FormData(form);
+    if (turnstileToken) fd.set('cf-turnstile-response', turnstileToken);
+
+    const res = await fetch(form.action, { method: 'POST', body: fd });
     const data = await res.json();
 
     if (data.success) {
-      statusEl.textContent = 'Message sent — we\'ll be in touch soon.';
+      statusEl.textContent = 'Message sent. We\'ll be in touch soon.';
       statusEl.classList.add('form__status--success');
       form.reset();
+      formStarted = false;
     } else {
       throw new Error(data.message || 'Something went wrong');
     }
@@ -261,5 +278,36 @@ form.addEventListener('submit', async (e) => {
   } finally {
     submitBtn.disabled = false;
     submitBtn.querySelector('span').textContent = 'Send message';
+    // Reset turnstile so a new token is issued next time
+    if (window.turnstile) window.turnstile.reset();
+    turnstileToken = null;
   }
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  // Fire Turnstile invisible challenge if not already solved
+  if (!turnstileToken && window.turnstile) {
+    submitBtn.disabled = true;
+    submitBtn.querySelector('span').textContent = 'Verifying...';
+    try {
+      turnstileToken = await new Promise((resolve, reject) => {
+        const widget = document.querySelector('.cf-turnstile');
+        window.turnstile.execute(widget, {
+          callback: resolve,
+          'error-callback': reject,
+        });
+        setTimeout(() => reject(new Error('Verification timed out')), 15000);
+      });
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.querySelector('span').textContent = 'Send message';
+      statusEl.textContent = 'Verification failed. Please try again.';
+      statusEl.className = 'form__status form__status--error';
+      return;
+    }
+  }
+
+  submitForm();
 });

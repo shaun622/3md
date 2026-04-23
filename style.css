@@ -659,6 +659,18 @@ input, textarea { font: inherit; color: inherit; }
 /* ─── CONTACT FORM ─── */
 .form { margin-top: 8px; }
 
+/* Honeypot — hidden from humans, visible to dumb bots */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .form__row {
   display: grid;
   grid-template-columns: 1fr 1fr;
